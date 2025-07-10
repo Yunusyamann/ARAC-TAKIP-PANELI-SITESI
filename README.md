@@ -60,7 +60,7 @@ Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin.
 
 1.  **Projeyi Klonlayın:**
     ```bash
-    git clone [https://github.com/](https://github.com/)[KullaniciAdiniz]/canbus-projesi.git
+    git clone [https://github.com/](https://github.com/)YunusYamann/canbus-projesi.git
     cd canbus-projesi
     ```
 
