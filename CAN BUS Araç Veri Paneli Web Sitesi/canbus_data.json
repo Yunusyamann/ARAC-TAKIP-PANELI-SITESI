@@ -1,0 +1,72 @@
+[
+  {
+    "timestamp": "2025-07-08T14:30:00Z",
+    "vehicle_id": "34 ABC 123",
+    "status": { "engine_on": true, "headlights_on": false, "doors_locked": true },
+    "diagnostics": { "engine_rpm": 2150, "vehicle_speed_kmh": 95, "coolant_temp_c": 92.5, "oil_temp_c": 101.2, "fuel_level_percent": 65, "battery_voltage": 14.1, "current_gear": 5, "odometer_km": 89450, "error_codes": [] },
+    "location": { "latitude": 37.5753, "longitude": 36.9228 }
+  },
+  {
+    "timestamp": "2025-07-08T14:32:15Z",
+    "vehicle_id": "06 DEF 456",
+    "status": { "engine_on": true, "headlights_on": true, "doors_locked": false },
+    "diagnostics": { "engine_rpm": 850, "vehicle_speed_kmh": 0, "coolant_temp_c": 88.0, "oil_temp_c": 95.5, "fuel_level_percent": 45, "battery_voltage": 13.8, "current_gear": 0, "odometer_km": 120510, "error_codes": ["P0420"] },
+    "location": { "latitude": 41.0082, "longitude": 28.9784 }
+  },
+  {
+    "timestamp": "2025-07-08T14:31:50Z",
+    "vehicle_id": "35 GHI 789",
+    "status": { "engine_on": false, "headlights_on": false, "doors_locked": true },
+    "diagnostics": { "engine_rpm": 0, "vehicle_speed_kmh": 0, "coolant_temp_c": 45.0, "oil_temp_c": 48.2, "fuel_level_percent": 88, "battery_voltage": 12.6, "current_gear": 0, "odometer_km": 35240, "error_codes": [] },
+    "location": { "latitude": 38.4237, "longitude": 27.1428 }
+  },
+  {
+    "timestamp": "2025-07-08T14:29:30Z",
+    "vehicle_id": "01 JKL 012",
+    "status": { "engine_on": true, "headlights_on": true, "doors_locked": true },
+    "diagnostics": { "engine_rpm": 3200, "vehicle_speed_kmh": 120, "coolant_temp_c": 95.0, "oil_temp_c": 105.1, "fuel_level_percent": 33, "battery_voltage": 14.2, "current_gear": 6, "odometer_km": 210800, "error_codes": [] },
+    "location": { "latitude": 39.9334, "longitude": 32.8597 }
+  },
+  {
+    "timestamp": "2025-07-08T14:33:05Z",
+    "vehicle_id": "07 MNO 345",
+    "status": { "engine_on": true, "headlights_on": false, "doors_locked": false },
+    "diagnostics": { "engine_rpm": 1500, "vehicle_speed_kmh": 50, "coolant_temp_c": 91.5, "oil_temp_c": 99.8, "fuel_level_percent": 75, "battery_voltage": 14.0, "current_gear": 3, "odometer_km": 62100, "error_codes": [] },
+    "location": { "latitude": 36.8969, "longitude": 30.7133 }
+  },
+  {
+    "timestamp": "2025-07-08T14:28:45Z",
+    "vehicle_id": "16 PRS 678",
+    "status": { "engine_on": false, "headlights_on": false, "doors_locked": false },
+    "diagnostics": { "engine_rpm": 0, "vehicle_speed_kmh": 0, "coolant_temp_c": 35.8, "oil_temp_c": 40.3, "fuel_level_percent": 55, "battery_voltage": 12.4, "current_gear": 0, "odometer_km": 99540, "error_codes": ["B100D"] },
+    "location": { "latitude": 37.0667, "longitude": 37.3833 }
+  },
+  {
+    "timestamp": "2025-07-08T14:30:55Z",
+    "vehicle_id": "41 TUV 901",
+    "status": { "engine_on": true, "headlights_on": true, "doors_locked": true },
+    "diagnostics": { "engine_rpm": 2800, "vehicle_speed_kmh": 110, "coolant_temp_c": 93.2, "oil_temp_c": 102.5, "fuel_level_percent": 25, "battery_voltage": 14.3, "current_gear": 5, "odometer_km": 150230, "error_codes": [] },
+    "location": { "latitude": 40.7673, "longitude": 29.9348 }
+  },
+  {
+    "timestamp": "2025-07-08T14:34:10Z",
+    "vehicle_id": "42 WXY 234",
+    "status": { "engine_on": true, "headlights_on": false, "doors_locked": true },
+    "diagnostics": { "engine_rpm": 900, "vehicle_speed_kmh": 15, "coolant_temp_c": 89.5, "oil_temp_c": 97.1, "fuel_level_percent": 95, "battery_voltage": 13.9, "current_gear": 2, "odometer_km": 11500, "error_codes": [] },
+    "location": { "latitude": 37.8746, "longitude": 32.4932 }
+  },
+  {
+    "timestamp": "2025-07-08T14:27:20Z",
+    "vehicle_id": "27 ZAB 567",
+    "status": { "engine_on": true, "headlights_on": true, "doors_locked": false },
+    "diagnostics": { "engine_rpm": 2200, "vehicle_speed_kmh": 80, "coolant_temp_c": 90.8, "oil_temp_c": 100.0, "fuel_level_percent": 60, "battery_voltage": 14.0, "current_gear": 4, "odometer_km": 78345, "error_codes": ["P0300"] },
+    "location": { "latitude": 40.1999, "longitude": 29.0634 }
+  },
+  {
+    "timestamp": "2025-07-08T14:35:00Z",
+    "vehicle_id": "46 EFE 890",
+    "status": { "engine_on": false, "headlights_on": false, "doors_locked": true },
+    "diagnostics": { "engine_rpm": 0, "vehicle_speed_kmh": 0, "coolant_temp_c": 25.0, "oil_temp_c": 28.5, "fuel_level_percent": 80, "battery_voltage": 12.8, "current_gear": 0, "odometer_km": 5421, "error_codes": [] },
+    "location": { "latitude": 38.6734, "longitude": 39.2223 }
+  }
+]

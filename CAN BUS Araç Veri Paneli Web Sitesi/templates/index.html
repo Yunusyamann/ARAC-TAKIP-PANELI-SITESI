@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araç Filosu Yönetim Paneli</title>
+    
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+<body>
+    <div class="background-blur"></div>
+
+    <main class="dashboard-container">
+        <div class="header">
+            <button id="logout-button"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button>
+            <h1>Araç Filosu</h1>
+            <p>Lütfen verilerini görüntülemek istediğiniz aracı seçin</p>
+        </div>
+
+        <div id="vehicle-list">
+            <div class="loading">Araçlar Yükleniyor...</div>
+        </div>
+    </main>
+
+    <script>
+        // Sayfa tamamen yüklendiğinde aşağıdaki JavaScript kodları çalışır.
+        document.addEventListener('DOMContentLoaded', async function() {
+            
+            // --- Çıkış Butonu Fonksiyonu ---
+            const logoutButton = document.getElementById('logout-button');
+            logoutButton.addEventListener('click', function() {
+                // Tarayıcının hafızasındaki token'ları temizle
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                
+                // Kullanıcıyı giriş sayfasına yönlendir
+                window.location.href = '/login/';
+            });
+
+            // --- Veri Çekme ve Sayfayı Doldurma Fonksiyonu ---
+            const accessToken = localStorage.getItem('accessToken');
+            const listElement = document.getElementById('vehicle-list');
+
+            // Eğer token yoksa, kullanıcı giriş yapmamış demektir. Login sayfasına yönlendir.
+            if (!accessToken) {
+                window.location.href = '/login/';
+                return;
+            }
+
+            try {
+                // API'den araç listesini, Authorization header'ı ile birlikte iste
+                const response = await fetch('/api/vehicles/', {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                // Eğer token geçersizse (401 Unauthorized), token'ları sil ve login sayfasına yönlendir.
+                if (response.status === 401) {
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+                    window.location.href = '/login/';
+                    return;
+                }
+
+                const vehicles = await response.json();
+                listElement.innerHTML = ''; // "Yükleniyor..." yazısını temizle
+
+                // Eğer hiç araç yoksa bilgilendirme mesajı göster
+                if (vehicles.length === 0) {
+                    listElement.innerHTML = '<div class="error">Gösterilecek araç bulunamadı.</div>';
+                    return;
+                }
+
+                // Gelen her bir araç verisi için bir kart oluştur
+                vehicles.forEach(vehicle => {
+                    const card = document.createElement('a');
+                    // Veritabanındaki boşluksuz ID'yi URL'e koy
+                    card.href = `/vehicle/${vehicle.vehicle_id}/`; 
+                    card.className = 'vehicle-card';
+                    
+                    const statusClass = vehicle.status.engine_on ? 'status-on' : 'status-off';
+                    const statusText = vehicle.status.engine_on ? 'Çalışıyor' : 'Kapalı';
+
+                    // Görünen plaka için boşluk ekle (Örn: "34ABC123" -> "34 ABC 123")
+                    const displayId = vehicle.vehicle_id.replace(/(\d{2})([A-Z]{3})(\d+)/, '$1 $2 $3');
+
+                    // Kartın HTML içeriğini oluştur
+                    card.innerHTML = `
+                        <i class="fas fa-car-side card-icon"></i>
+                        <div class="card-info">
+                            <span class="vehicle-id">${displayId}</span>
+                            <div class="vehicle-status">
+                                <span class="status-dot ${statusClass}"></span>
+                                <span class="status-text">${statusText}</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow-icon"></i>
+                    `;
+                    listElement.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error('Araç listesi alınamadı:', error);
+                listElement.innerHTML = '<div class="error">Sunucuya bağlanılamadı veya yetkiniz yok.</div>';
+            }
+        });
+    </script>
+</body>
+</html>

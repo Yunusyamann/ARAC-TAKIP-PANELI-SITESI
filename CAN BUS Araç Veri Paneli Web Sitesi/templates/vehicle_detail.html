@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araç Detayları</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="background-blur"></div>
+
+    <a href="/" class="back-link"><i class="fas fa-chevron-left"></i> Filoya Dön</a>
+
+    <main class="dashboard-container">
+        <div class="header">
+            <h1 id="vehicle-id-display">Yükleniyor...</h1>
+            <p>Anlık Araç Veri Paneli</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="gauge-container">
+                <div class="gauge" id="speed-gauge"></div>
+                <div class="gauge" id="rpm-gauge"></div>
+            </div>
+            <div class="info-grid">
+                <div class="loading">Veriler Yükleniyor...</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // URL'den araç ID'sini al
+        const vehicleId = window.location.pathname.split('/')[2];
+        let map, marker;
+        let mapInitialized = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Başlangıçta boş göstergeleri çiz
+            updateGauge('speed-gauge', 0, 240, 'km/s', 'Hız');
+            updateGauge('rpm-gauge', 0, 8000, 'RPM', 'Motor Devri');
+            fetchData();
+            setInterval(fetchData, 5000); // 5 saniyede bir verileri yenile
+        });
+
+        async function fetchData() {
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                window.location.href = '/login/';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/vehicles/${vehicleId}/`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+
+                if (response.status === 401) {
+                    window.location.href = '/login/';
+                    return;
+                }
+                if (!response.ok) throw new Error('Araç verisi alınamadı.');
+
+                const data = await response.json();
+                updateDashboard(data);
+            } catch (error) {
+                console.error("Veri alınamadı:", error);
+                document.querySelector('.dashboard-grid').innerHTML = `<div class="error">Veri sunucusuna bağlanılamadı.</div>`;
+            }
+        }
+
+        function updateDashboard(data) {
+            const diag = data.diagnostics;
+            const status = data.status;
+
+            // Görünen plaka için boşluk ekle
+            const displayId = data.vehicle_id.replace(/(\d{2})([A-Z]{3})(\d+)/, '$1 $2 $3');
+            document.getElementById('vehicle-id-display').textContent = displayId;
+
+            updateGauge('speed-gauge', diag.vehicle_speed_kmh, 240, 'km/s', 'Hız');
+            updateGauge('rpm-gauge', diag.engine_rpm, 8000, 'RPM', 'Motor Devri');
+
+            const infoGrid = document.querySelector('.info-grid');
+            infoGrid.innerHTML = '';
+
+            infoGrid.innerHTML += createInfoCard('fa-gas-pump', 'Yakıt', `${diag.fuel_level_percent}%`);
+            infoGrid.innerHTML += createInfoCard('fa-thermometer-half', 'Soğutma Suyu', `${diag.coolant_temp_c}°C`);
+            infoGrid.innerHTML += createInfoCard('fa-oil-can', 'Yağ Sıcaklığı', `${diag.oil_temp_c}°C`);
+            infoGrid.innerHTML += createInfoCard('fa-car-battery', 'Akü', `${diag.battery_voltage}V`);
+            infoGrid.innerHTML += createInfoCard('fa-gear', 'Vites', `${diag.current_gear === 0 ? 'N' : diag.current_gear}`);
+            infoGrid.innerHTML += createInfoCard('fa-road', 'Kilometre', `${diag.odometer_km.toLocaleString('tr-TR')} km`);
+
+            infoGrid.innerHTML += '<div id="map"></div>';
+            initializeOrUpdateMap(data.location.latitude, data.location.longitude);
+        }
+
+        function createInfoCard(icon, label, value) {
+            return `<div class="info-card"><i class="fas ${icon}"></i><div class="info-text"><span class="info-label">${label}</span><span class="info-value">${value}</span></div></div>`;
+        }
+
+        function initializeOrUpdateMap(lat, lon) {
+            if (!mapInitialized) {
+                map = L.map('map').setView([lat, lon], 15);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; OpenStreetMap &copy; CARTO'
+                }).addTo(map);
+                marker = L.marker([lat, lon]).addTo(map);
+                mapInitialized = true;
+            } else {
+                const newLatLng = new L.LatLng(lat, lon);
+                map.setView(newLatLng);
+                marker.setLatLng(newLatLng);
+            }
+        }
+
+        function updateGauge(elementId, value, maxValue, unit, label) {
+            const gaugeElement = document.getElementById(elementId);
+            const percentage = Math.min(Math.max(value / maxValue, 0), 1);
+            const rotation = percentage * 180;
+            gaugeElement.innerHTML = `<div class="gauge-body"><div class="gauge-fill" style="transform: rotate(${rotation}deg);"></div><div class="gauge-cover"><div class="gauge-value">${Math.round(value)}</div><div class="gauge-unit">${unit}</div></div></div><div class="gauge-label">${label}</div>`;
+        }
+    </script>
+</body>
+</html>
